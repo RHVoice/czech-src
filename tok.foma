@@ -95,13 +95,14 @@ word -> lseq || [.#.|word|num|sym] LetterSequence _ ,,
 sym -> num || [sym|.#.] %- _ Digit,
 sym -> num || [sym|.#.] %+ _ Digit,
 num DecimalSeparator _ Digit+,,
-Digit num [% sym]* € _ ,,
+#Digit num [% sym]* € _ ,,
 num -> dig || Digit^16 _ ;
 
 define Stage3 
 word -> lseq || .#.  [y|Y] _ ,,
 num -> sym || DecimalSeparator _ Digit+ num DecimalSeparator num,
- DecimalSeparator num Digit+ num DecimalSeparator _ ;
+ DecimalSeparator num Digit+ num DecimalSeparator _ ,, 
+sym -> graph || .#. [%$|%€] _ .#. ; 
 
 define CamelCase 
 [..] -> word || SmallLetter _ CapitalLetter , CapitalLetter _ CapitalLetter SmallLetter ; 
@@ -113,9 +114,10 @@ word -> 0 ||
 # Miscellaneous: YouTube and others.
 [[y|Y] o u] _ [[t|T] u b e] ;
 
-source unicodechars.foma
+#source unicodechars.foma
 
-regex UnicodeToNativeTranslitTok .o. 
+regex 
+#UnicodeToNativeTranslitTok .o. 
 Stage1 .o.
 CamelCase .o.
 NoSplit .o.
