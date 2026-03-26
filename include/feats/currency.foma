@@ -53,21 +53,21 @@ define TranslateCurrency
 # Translators, please take care of this:
 # English: singular number:
 # A single dollar or euro.
-1 -> one || _ [ds1|ds2] ,, 
+1 -> jeden || _ [ds1|ds2] ,, 
 # A single cent, either with dollar or euro.
-[%0 1] -> one || _ [cs1|cs2] ,, 
+[%0 1] -> jeden || _ [cs1|cs2] ,, 
 # Remove the zero in cents, the 2digit format. We want the single digit.
 %0 -> 0 || _ [NZDigit - 1] cp1|cp2 ,, 
 # Translate those two currency parts, from tags to human readable strings, which are already commented in the previous definition.
-ds1 -> dollar ,, 
+ds1 -> dolar ,, 
 ds2 -> euro ,, 
-dp1 -> dollars ,, 
-dp2 -> euros ,, 
-with -> and ,, 
+dp1 -> dolary ,, 
+dp2 -> eura ,, 
+with -> i ,, 
 cs1 -> cent ,, # dollar zero comma zero one = one cent
 cs2 -> cent ,, # euro zero comma zero one = one cent. In ENglish, cents doesn't deppend on context.
-cp1 -> cents ,, # dollar zero comma fourty = fourty cents
-cp2 -> cents ,, # dollar zero comma fourty = fourty cents. In English, cents doesn't deppend on context.
+cp1 -> centy ,, # dollar zero comma fourty = fourty cents
+cp2 -> centy ,, # dollar zero comma fourty = fourty cents. In English, cents doesn't deppend on context.
 # And remove symbols, not needed in the output.
 [dollar|eur|%,] -> 0 ; 
 
