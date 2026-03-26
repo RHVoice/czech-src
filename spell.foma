@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+source include/formats.foma
+
 define Letter 
 [[a|A]:a] | 
 [[ä|Ä]:[přehlasované a]] | 
@@ -62,8 +64,6 @@ define Letter
 [[ý|Ý]:[ypsilon dlouhé]] | 
 [[z|Z]:zet] |
 [[ž|Ž]:žet] ; 
-
-define Digit %0:nula|1:jedna|2:dva|3:tři|4:čtyři|5:pět|6:šest|7:sedum|8:osum|9:devět;
 
 define Whitespace 
 tab:tabulátor | 
@@ -144,4 +144,4 @@ define Symbol
 source unicodechars.foma
 
 regex 
-Letter | Digit | Whitespace | Punctuation | Symbol | UnicodeSpell ; 
+Letter | SpellDigit | Whitespace | Punctuation | Symbol | UnicodeSpell ; 

@@ -13,16 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+source include/formats.foma
+
 define ProcNumChar [ %-:mínus |
 %€: euro |
 %+: plus |
 %.: tečka |
 %,: čárka ] ;
-
-define NZDigit 1|2|3|4|5|6|7|8|9;
-define Digit %0|NZDigit;
-define UnformattedNumber [ Digit Digit^<16];
-define Number  UnformattedNumber;
 
 define Insertzeros 
 [%0] -> nula || [ .#. | [.#. %0+]] _ ;
@@ -42,7 +39,7 @@ define InsertTrillions
 define RemoveSkippedParts 
 %0 %0 %0 [tisíc|miliónů|miliard|biliónů] -> 0 ;
 
-define Units %0:0|1:jedna|2:dva|3:tři|4:čtyři|5:pět|6:šest|7:sedum|8:osum|9:devět;
+define Units SpellDigit ;
 
 define Teens 1:0 [%0:deset|1:jedenáct|2:dvanáct|3:třináct|4:čtrnáct|5:patnáct|6:šestnáct|7:sedmnáct|8:osmnáct|9:devatenáct];
 

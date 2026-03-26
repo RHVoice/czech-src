@@ -13,21 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-define NZDigit 
-1:jedna | 
-2:dva | 
-3:tři | 
-4:čtyři | 
-5:pět | 
-6:šest | 
-7:sedm | 
-8:osm | 
-9:devět ; 
-
-define Digit [%0 : nula] | NZDigit;
+source include/formats.foma
 
 define Number 
-NZDigit | 
+Unit | 
 [[1:0] [
 %0:deset | 
 1:jedenáct | 
@@ -39,7 +28,7 @@ NZDigit |
 7:sedmnáct | 
 8:osmnáct | 
 9:devatenáct]] | 
-[[2:dvacet] [%0:0 | NZDigit]] ;
+[[2:dvacet] [%0:0 | Unit]] ;
 
 define Plus %+ : plus;
 define Minus %- : minus;
@@ -85,7 +74,7 @@ Enter |
 {window} : windows ; 
 
 define KPKey 
-[{kp-} : 0] [Digit | Plus | Minus | Star | Slash | Dot | Enter];
+[{kp-} : 0] [SpellDigit | Plus | Minus | Star | Slash | Dot | Enter];
 
 define FKey 
 f:ef Number ;

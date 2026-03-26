@@ -1,0 +1,79 @@
+# Copyright (C) 2024-2026  Mateo Cedillo <angelitomateocedillo@gmail.com>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 2.1 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# proposal: Currency support with documentation. English version.
+# Author: Matthew C.
+# Currencies and formats.
+# Those are already definned in our format set.
+source include/formats.foma
+
+# Parsing the currency using tags:
+
+define Singular 
+# if zero cents, remove it. Dollar only:
+[%, %0^2] -> 0 || [dollar|eur] UnformattedNumber _ .#. ; 
+
+define TagCurrency 
+# First part: dollars and euros handling, singular and plural.
+# if $0, remove it. Cents only.
+[[dollar|eur] %0 %,] @-> 0 || .#. _ ,, 
+# Ds1: dollar, in singular.
+[..] -> ds1 || dollar 1 _ %, , .#. dollar 1 _ .#. ,, 
+# dp1: dollars, in plural.
+[..] -> dp1 || dollar [UnformattedNumber - 1|%0] _ %, , .#. dollar [UnformattedNumber - 1|%0] _ .#. ,, 
+# ds2: eur, in singular.
+[..] -> ds2 || eur 1 _ %, , .#. eur 1 _ .#. ,, 
+# dp2: eurs, in plural
+[..] -> dp2 || eur [UnformattedNumber - 1|%0] _ %, , .#. eur [UnformattedNumber - 1|%0] _ .#. ,, 
+# with: complement, which means and, with, etc, or empty.
+%, -> ... with || [dollar|eur] DollarFormat _ CentFormat ,, 
+# second part: cents handling, singular and plural.
+# cs1: cent, in singular, for dollar(s).
+[%0 1] -> ... cs1 || dollar DollarFormat %, _ .#. ,, 
+# cs2: cent, in singular, for euro(s).
+[%0 1] -> ... cs2 || eur DollarFormat %, _ .#. ,, 
+# cp1: cents, in plural, for dollar(s).
+[CentFormat - [%0 1]] -> ... cp1 || dollar DollarFormat %, _ .#. ,, 
+# cp2: cents, in plural, for euro(s).
+[CentFormat - [%0 1]] -> ... cp2 || eur DollarFormat %, _ .#. ; 
+
+define TranslateCurrency 
+# Translators, please take care of this:
+# English: singular number:
+# A single dollar or euro.
+1 -> one || _ [ds1|ds2] ,, 
+# A single cent, either with dollar or euro.
+[%0 1] -> one || _ [cs1|cs2] ,, 
+# Remove the zero in cents, the 2digit format. We want the single digit.
+%0 -> 0 || _ [NZDigit - 1] cp1|cp2 ,, 
+# Translate those two currency parts, from tags to human readable strings, which are already commented in the previous definition.
+ds1 -> dollar ,, 
+ds2 -> euro ,, 
+dp1 -> dollars ,, 
+dp2 -> euros ,, 
+with -> and ,, 
+cs1 -> cent ,, # dollar zero comma zero one = one cent
+cs2 -> cent ,, # euro zero comma zero one = one cent. In ENglish, cents doesn't deppend on context.
+cp1 -> cents ,, # dollar zero comma fourty = fourty cents
+cp2 -> cents ,, # dollar zero comma fourty = fourty cents. In English, cents doesn't deppend on context.
+# And remove symbols, not needed in the output.
+[dollar|eur|%,] -> 0 ; 
+
+## We won't regex the output as this will be included in numbers.foma.
+regex 
+Currency .o. 
+Singular .o. 
+TagCurrency .o. 
+TranslateCurrency ; 
