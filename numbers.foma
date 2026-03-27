@@ -25,7 +25,8 @@ define Insertzeros
 [%0] -> nula || [ .#. | [.#. %0+]] _ ;
 
 define InsertThousands 
-[..] -> tisíc || Digit _ Digit^3 .#.  ;
+[..] -> tisíc || 
+([%$|%€]) Digit _ Digit^3 (dp1|dp2) | ([dp1|dp2] %, with Digit^{1,2} [cp1|cp2|cs1|cs2]) .#.  ;
 
 define InsertMillions 
 [..] -> miliónů || Digit _ Digit^3 tisíc;
@@ -114,13 +115,13 @@ define ProcNumber
 Number .o. 
 Singular .o.
 TagCurrency .o. 
-TranslateCurrency .o. 
 Insertzeros .o. 
 InsertThousands .o. 
 InsertMillions .o. 
 InsertBillions .o. 
 InsertTrillions .o. 
 RemoveSkippedParts .o. 
+TranslateCurrency .o. 
 DigitsToWords .o. 
 FixCase .o. 
 ReplaceDva .o. 
