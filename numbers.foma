@@ -26,7 +26,7 @@ define Insertzeros
 
 define InsertThousands 
 [..] -> tisíc || 
-([%$|%€]) Digit _ Digit^3 (dp1|dp2) | ([dp1|dp2] %, with Digit^{1,2} [cp1|cp2|cs1|cs2]) .#.  ;
+([%$|%€]) Digit _ Digit^3 ([dp1|dp2] | [dp1|dp2] %, with Digit^{1,2} [cp1|cp2|cs1|cs2]) .#.  ;
 
 define InsertMillions 
 [..] -> miliónů || Digit _ Digit^3 tisíc;
