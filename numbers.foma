@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-source include/formats.foma
+source include/feats/currency.foma
 
 define ProcNumChar [ %-:mínus |
 %€: euro |
@@ -110,7 +110,11 @@ jeden -> 0 || .#. | GroupName _ milión,,
 jedna -> 0 || .#.  | GroupName _ miliarda,, 
 jeden -> 0 || .#. | GroupName _ bilión ; 
 
-define ProcNumber Number .o. 
+define ProcNumber 
+Number .o. 
+Singular .o.
+TagCurrency .o. 
+TranslateCurrency .o. 
 Insertzeros .o. 
 InsertThousands .o. 
 InsertMillions .o. 

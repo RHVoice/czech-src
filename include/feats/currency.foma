@@ -72,8 +72,8 @@ cp2 -> centy ,, # dollar zero comma fourty = fourty cents. In English, cents doe
 [dollar|eur|%,] -> 0 ; 
 
 ## We won't regex the output as this will be included in numbers.foma.
-regex 
-Currency .o. 
-Singular .o. 
-TagCurrency .o. 
-TranslateCurrency ; 
+#regex 
+#Currency .o. 
+#Singular .o. 
+#TagCurrency .o. 
+#TranslateCurrency ; 
