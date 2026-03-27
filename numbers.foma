@@ -26,7 +26,7 @@ define Insertzeros
 
 define InsertThousands 
 [..] -> tisíc || 
-([%$|%€]) Digit _ Digit^3 ([dp1|dp2] | [dp1|dp2] %, with Digit^{1,2} [cp1|cp2|cs1|cs2]) .#.  ;
+([.#. %$|%€]) Digit _ Digit^3 ([dp1|dp2] | [dp1|dp2] %, with Digit^{1,2} [cp1|cp2|cs1|cs2]) .#.  ;
 
 define InsertMillions 
 [..] -> miliónů || Digit _ Digit^3 tisíc;
@@ -40,7 +40,7 @@ define InsertTrillions
 define RemoveSkippedParts 
 %0 %0 %0 [tisíc|miliónů|miliard|biliónů] -> 0 ;
 
-define Units SpellDigit ;
+define Units Unit | %0:0 ;
 
 define Teens 1:0 [%0:deset|1:jedenáct|2:dvanáct|3:třináct|4:čtrnáct|5:patnáct|6:šestnáct|7:sedmnáct|8:osmnáct|9:devatenáct];
 
@@ -121,8 +121,8 @@ InsertMillions .o.
 InsertBillions .o. 
 InsertTrillions .o. 
 RemoveSkippedParts .o. 
-TranslateCurrency .o. 
 DigitsToWords .o. 
+TranslateCurrency .o. 
 FixCase .o. 
 ReplaceDva .o. 
 ReplaceJedna .o. 
