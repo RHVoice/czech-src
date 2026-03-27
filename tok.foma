@@ -111,10 +111,10 @@ word -> 0 ||
 # Miscellaneous: YouTube and others.
 [[y|Y] o u] _ [[t|T] u b e] ;
 
-#source unicodechars.foma
+source unicodechars.foma
 
 regex 
-#UnicodeToNativeTranslitTok .o. 
+UnicodeToNativeTranslitTok .o. 
 Stage1 .o.
 CamelCase .o.
 NoSplit .o.

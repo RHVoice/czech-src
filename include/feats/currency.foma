@@ -13,8 +13,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# proposal: Currency support with documentation. English version.
-# Author: Matthew C.
+# proposal: Currency support with documentation.
+# Adaptations for Czech.
 # Currencies and formats.
 # Those are already definned in our format set.
 source include/formats.foma
