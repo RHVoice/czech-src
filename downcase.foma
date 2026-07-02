@@ -65,7 +65,7 @@ Y -> y || _ ,,
 Z -> z || _  ,, 
 Ž -> ž || _ ; 
 
-source unicodechars.foma
+source unicode_downcase.foma
 
 regex UnicodeDowncase .o. 
 Downcase ; 

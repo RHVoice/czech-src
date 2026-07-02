@@ -67,7 +67,7 @@ z:[z e t] |
 ž:[zh e t] ] ;
 
 source stress.foma
-source unicodechars.foma
+source unicode_lseq.foma
 
 define TranscribeLetterSequence LetterLseq|UnicodeLseq -> || _ ;
 

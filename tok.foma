@@ -113,7 +113,7 @@ word -> 0 ||
 # Miscellaneous: YouTube and others.
 [[y|Y] o u] _ [[t|T] u b e] ;
 
-source unicodechars.foma
+source unicode_tok.foma
 
 regex UnicodeToNativeTranslitTok .o. 
 Stage1 .o.

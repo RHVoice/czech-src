@@ -35,4 +35,6 @@ y0: [y p s i1 l o0 n] |
 yy: [y p s i0 l o0 n d l o u1 h ee0]]
 @-> || .#. _ .#.;
 
-regex czechPrep .o. spellLetters;
+source unicode_norm.foma
+
+regex czechPrep .o. spellLetters .o. NormalizeCharactersBase ;

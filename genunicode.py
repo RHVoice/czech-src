@@ -1,5 +1,7 @@
 #!/usr/bin/python3
+import mmap
 import os
+import re
 import subprocess
 import unicodedata
 
@@ -55,7 +57,10 @@ accentSuffixes = {
 	"\u032c": "s háčkem pod",
 }
 
+fullWidth = "plná šířka"
+
 latinExceptions = {
+	'ø': ('o', 'ó přeškrtnuté'),
 	'đ': ('d', 'dé přeškrtnuté'),
 	'ħ': ('h', 'há přeškrtnuté'),
 	'ı': ('i', 'í bez tečky'),
@@ -216,9 +221,6 @@ latinExceptions = {
 	'ʯ': ('h', 'obrácené há s malým hákem a ocáskem'),
 }
 
-# Path to the folder where this script is located in
-folder = os.path.dirname(__file__)
-
 baseCharSpelling = {
 	"a": "a",
 	"b": "bé",
@@ -247,6 +249,34 @@ baseCharSpelling = {
 	"y": "ypsilon",
 	"z": "zet",
 }
+
+fullWidthOffset = 0xfee0
+
+# Math unicode symbols that mirror basic latin alphabet
+# description is appended to the letter spelling such as a bold, a italic
+# Offset is a difference between basic lowercase unicode character and math unicode symbol
+# Python's builtin transformation from lowercase to uppercase and the other way round is not supported consistently thus store two offsets for each type.
+unicodeMath = (
+	#(description, upper case offset, lowercase offset)
+	('Tučné Matematické', 0x1d39f, 0x1d3b9), # MATHEMATICAL BOLD
+	('Kurzíva Matematické', 0x1d3d3, 0x1d3ed), # MATHEMATICAL ITALIC
+	('Tučné Kurzíva Matematické', 0x1d407, 0x1d421), # MATHEMATICAL BOLD ITALIC
+	('Skript Matematické', 0x1d43b, 0x1d455), # MATHEMATICAL SCRIPT
+	('Tučné Skript Matematické', 0x1d46f, 0x1d489), # MATHEMATICAL BOLD SCRIPT
+	('Fraktura Matematické', 0x1d4a3, 0x1d4bd), # MATHEMATICAL FRAKTUR
+	('Dvakrát vyražené matematické', 0x1d4d7, 0x1d4f1), # MATHEMATICAL DOUBLE-STRUCK
+	('Tučné Fraktura Matematické', 0x1d50b, 0x1d525), # MATHEMATICAL BOLD FRAKTUR
+	('bezpatkové matematické', 0x1d53f, 0x1d559), # MATHEMATICAL SANS-SERIF
+	('Tučné bezpatkové Matematické', 0x1d573, 0x1d58d), # MATHEMATICAL SANS-SERIF BOLD
+	('Kurzíva bezpatkové Matematické', 0x1d5a7, 0x1d5c1), # MATHEMATICAL SANS-SERIF ITALIC
+	('Tučné Kurzíva bezpatkové Matematické', 0x1d5db, 0x1d5f5), # MATHEMATICAL SANS-SERIF BOLD ITALIC
+	('S pevnou šířkou Matematické', 0x1d60f, 0x1d629), # MATHEMATICAL MONOSPACE
+	('zakroužkované', 0x2455, 0x246f), # CIRCLED
+	('v závorke', None, 0x243b), # PARENTHESIZED
+)
+
+# Path to the folder where this script is located in
+folder = os.path.dirname(__file__)
 
 graphs = {}
 # Load the original graphs
@@ -277,6 +307,21 @@ def getTranscription(str):
 		res=res[:-4]
 	return res
 
+def getCharSpelling(str):
+	if len(str) != 1:
+			return ''
+	try:
+		if int(str) >= 0:
+			re_match = re.compile(r"%s\s?\:\s?(\w+)"%str)
+	except:
+		re_match = re.compile(r"\%" + r"%s\s?\:\s?\[?(\w*)\]?\s"%re.escape(str))
+	with open(os.path.join(folder, "spell.foma"), 'r+') as f:
+		data = mmap.mmap(f.fileno(), 0).read().decode("utf-8")
+		mo = re_match.search(data)
+		if mo:
+			return mo.group(1)
+	return ''
+
 def errExit(msg):
 	print("Error: "+msg)
 	exit(1)
@@ -285,29 +330,55 @@ def appendLists(lowcaseChar, upcaseChar, nativeStr, descStr):
 	lseqStr=getTranscription(descStr)
 	if not len(lseqStr):
 		errExit("Can not generate transcription for description '%s'" %(descStr))
-	if upcaseChar and ord(upcaseChar) >=255:
-		if nativeStr: translitParts.append("[%"+lowcaseChar+"|%"+upcaseChar+"] -> {"+nativeStr+"} || _ ")
-	else:
-		if nativeStr: translitParts.append("[%"+lowcaseChar+"] -> {"+nativeStr+"} || _ ")
-	if upcaseChar and ord(upcaseChar) >=255:
-		if nativeStr: translitTokParts.append("[%"+lowcaseChar+"|%"+upcaseChar+"] -> "+nativeStr[:1]+" || _ ")
-	else:
-		if nativeStr: translitTokParts.append("[%"+lowcaseChar+"] -> "+nativeStr[:1]+" || _ ")
-	if upcaseChar and ord(upcaseChar) >=255:
-		downcaseParts.append("%"+upcaseChar+" -> %"+lowcaseChar+" || _ ")
-	if upcaseChar and ord(upcaseChar) >=255:
-		spellParts.append("[[%"+lowcaseChar+"|%"+upcaseChar+"]:["+descStr+"]]")
-	else:
-		spellParts.append("[[%"+lowcaseChar+"]:["+descStr+"]]")
-	lseqParts.append("%"+lowcaseChar+":["+lseqStr+"]")
+	if lowcaseChar and nativeStr and not nativeStr in translitDict.keys():
+		translitDict[nativeStr] = []
+	try:
+		nativeStrTok = nativeStr[:1]
+	except:
+		nativeStrTok = ''
+	if lowcaseChar and nativeStrTok and not nativeStrTok in translitTokDict.keys():
+		translitTokDict[nativeStrTok] = []
+	if (lowcaseChar or upcaseChar) and descStr and not descStr in spellDict.keys():
+		spellDict[descStr] = []
+	if lowcaseChar and not lseqStr in lseqDict.keys():
+		lseqDict[lseqStr] = []
+	if nativeStr and lowcaseChar:
+		translitDict[nativeStr].append("%"+lowcaseChar)
+	if nativeStrTok and lowcaseChar:
+		translitTokDict[nativeStrTok].append("%"+lowcaseChar)
+	if descStr and lowcaseChar:
+		spellDict[descStr].append("%"+lowcaseChar)
+	if lowcaseChar:
+		lseqDict[lseqStr].append("%"+lowcaseChar)
+	if upcaseChar and upcaseChar != lowcaseChar and not ord(upcaseChar) in range(ord("A"), ord("Z") +1):
+		if lowcaseChar:
+			downcaseParts.append("%"+upcaseChar+" -> %"+lowcaseChar+" || _ ")
+		if nativeStr:
+			translitDict[nativeStr].append("%"+upcaseChar)
+		if nativeStrTok:
+			translitTokDict[nativeStrTok].append("%"+upcaseChar)
+		if descStr:
+			spellDict[descStr].append("%"+upcaseChar)
+
+	if not nativeStr:
+		return
 	if nativeStr in graphs:
 		chType=graphs[nativeStr]
 	else:
 		chType="c"
-	graphs[lowcaseChar]=chType
+	if lowcaseChar:
+		graphs[lowcaseChar]=chType
 	if upcaseChar and ord(upcaseChar) >=255:
 		graphs[upcaseChar]=chType
 
+def writeFoma(fileName, content):
+	with open("unicode_"+fileName+".foma", "w") as fi:
+		fi.write("#Do not edit, file automatically generated by genunicode.py\n#\n"+content)
+
+translitDict={}
+translitTokDict={}
+lseqDict={}
+spellDict={}
 translitParts=[]
 translitTokParts=[]
 downcaseParts=[]
@@ -342,51 +413,118 @@ for i in range(ord("a"), ord("z") +1):
 			descStr = " ".join((baseCharSpelling[baseChar], accentSuffixes[combiningAccent], "a", accentSuffixes[combiningAccent2]))
 			print(descStr)
 			appendLists(lowcaseChar, upcaseChar, nativeStr, descStr)
+	for fontType in unicodeMath:
+		try:
+			lowcaseChar = chr(i +fontType[2])
+		except:
+			lowcaseChar = ''
+		lowcaseCharName = ''
+		try:
+			lowcaseCharName = unicodedata.name(lowcaseChar)
+		except:
+			lowcaseChar = ''
+		try:
+			upcaseChar = chr(i +fontType[1])
+		except:
+			upcaseChar = ''
+		upcaseCharName = ''
+		try:
+			upcaseCharName = unicodedata.name(upcaseChar)
+		except:
+			upcaseChar = ''
+		if not lowcaseChar and not upcaseChar:
+			continue
+		print(" ".join((upcaseCharName, lowcaseCharName)))
+		nativeStr = baseChar
+		descStr = " ".join((baseCharSpelling[baseChar], fontType[0]))
+		appendLists(lowcaseChar, upcaseChar, nativeStr, descStr)
 
-for preformatted in latinExceptions.keys():
-	lowcaseChar = preformatted
+for charStr, descStr in accentNames.items():
+	latinExceptions[charStr] = ('', descStr)
+for charStr, preformatted in latinExceptions.items():
+	lowcaseChar = charStr
+	if not lowcaseChar:
+		continue
 	try:
-		upcaseChar = preformatted.upper()
+		upcaseChar = lowcaseChar.upper()
 	except:
-		upcaseChar = None
-	nativeStr = latinExceptions[preformatted][0]
-	descStr = latinExceptions[preformatted][1]
+		upcaseChar = ''
+	if upcaseChar and upcaseChar == lowcaseChar:
+		upcaseChar = ''
+	nativeStr = preformatted[0]
+	descStr = preformatted[1]
 	appendLists(lowcaseChar, upcaseChar, nativeStr, descStr)
 
-resultFoma="""#Do not edit, file automatically generated.
-#
-#For g2p:
-define UnicodeToNativeTranslit \n"""\
-+",,\n".join(translitParts)+";\n"\
-+"""
+for num in range(33, 127):
+	char = chr(num)
+	if char.isupper():
+		#print("Skipping uppercase letter %s"%char)
+		continue
+	if char in baseCharSpelling.keys():
+		#print("Smal letter %s"%char)
+		nativeStr = char
+		lowcaseChar = chr(ord(char) +fullWidthOffset)
+		try:
+			upcaseChar = lowcaseChar.upper()
+		except:
+			upcaseChar = ''
+		if upcaseChar and upcaseChar == lowcaseChar:
+			upcaseChar = ''
+		descStr = " ".join((baseCharSpelling[char], fullWidth))
+		appendLists(lowcaseChar, upcaseChar, nativeStr, descStr)
+		continue
+	spelling = getCharSpelling(char)
+	if spelling:
+		#print("Have spelling %s"%spelling)
+		nativeStr = ''
+		lowcaseChar = chr(ord(char) +fullWidthOffset)
+		upcaseChar = ''
+		descStr = " ".join((spelling, fullWidth))
+		appendLists(lowcaseChar, upcaseChar, nativeStr, descStr)
+	else:
+		print("Unknown %s"%char)
 
-#For tok (single char to single letter):
+for nativeStr in translitDict.keys():
+	if not translitDict[nativeStr]:
+		continue
+	translitParts.append("[" + "|".join(translitDict[nativeStr]) + "] -> {"+nativeStr+"} || _ ")
+for nativeStrTok in translitTokDict.keys():
+	if not translitTokDict[nativeStrTok]:
+		continue
+	translitTokParts.append("[" + "|".join(translitTokDict[nativeStrTok]) + "] -> "+nativeStrTok+" || _ ")
+for descStr in spellDict.keys():
+	if not spellDict[descStr]:
+		continue
+	spellParts.append("[[" + "|".join(spellDict[descStr]) + "]:["+descStr+"]]")
+for lseqStr in lseqDict.keys():
+	if not lseqDict[lseqStr]:
+		continue
+	lseqParts.append("[" + "|".join(lseqDict[lseqStr]) + "]:["+lseqStr+"]")
+writeFoma("norm", """#For pg2p:
+define NormalizeCharactersBase \n"""\
++",,\n".join(translitParts)+";\n")
+
+writeFoma("tok", """#For tok (character(s) to single letter):
 define UnicodeToNativeTranslitTok \n"""\
-+",,\n".join(translitTokParts)+";\n"\
-+"""
++",,\n".join(translitTokParts)+";\n")
 
-#For spelling:
+writeFoma("spell", """#For spelling:
 define UnicodeSpell \n"""\
-+"|\n".join(spellParts)+";\n"\
-+"""
++"|\n".join(spellParts)+";\n")
 
-#For lseq:
+writeFoma("lseq", """#For lseq:
 define UnicodeLseq \n"""\
-+"|\n".join(lseqParts)+";\n"\
-+"""
++"|\n".join(lseqParts)+";\n")
 
-#For downcase:
+writeFoma("downcase", """#For downcase:
 define UnicodeDowncase \n"""\
-+",,\n".join(downcaseParts)+";\n"
++",,\n".join(downcaseParts)+";\n")
 
-fi=open("unicodechars.foma", "w")
-fi.write(resultFoma)
-fi.close()
-
-fi=open("../../../data/languages/"+lang+"/graph.txt", "w")
-for ch, chType in graphs.items():
-	fi.write(ch+" "+chType+"\n")
-fi.close()
+with open("../../../data/languages/"+lang+"/graph.txt", "w", encoding="utf-8") as fi:
+	for ch, chType in graphs.items():
+		if ord(ch) >= 0x1d400: # RHVoice can't decode these
+			continue
+		fi.write(ch+" "+chType+"\n")
 
 print("Unicode characters definitions generated.\n")
-print("Recompile downcase, g2p, lseq, spell and tok.foma.")
+print("Recompile downcase, pg2p, lseq, spell and tok.foma.")
