@@ -85,10 +85,13 @@ define DecimalSeparator %.|%,;
 define Word Letter+ ;
 define ExceptionalWord2 [[P h o n e]|[P [a|o] d]] ; 
 
+source SpokenSymbols.foma
+
 define Stage1 
 Number @-> ... num || _ ,, 
 Word @-> ... word || _ .#. | \Letter ,, 
-\[Letter | Digit] @-> ... sym || _ ; 
+SpokenSymbol.u @-> ... graph || _ ,, 
+\[Letter | Digit| SpokenSymbol.u] @-> ... sym || _ ; 
 
 define Stage2 
 word -> lseq || [.#.|word|num|sym] LetterSequence _ ,, 

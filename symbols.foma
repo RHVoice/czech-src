@@ -1,0 +1,84 @@
+# Copyright (C) 2026 Peter Vagner <pvagner@pvagner.sk>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 2.1 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+define Punctuation 
+%,:čárka | 
+%، : [arabská čárka] | 
+%、 : [ideografická čárka] | 
+%.:tečka | 
+%?:otazník | 
+%¿ : [obrácený otazník] |
+%!:vykřičník | 
+%¡ : [obrácený vykřičník] |
+%::dvojtečka | 
+%;:středník 
+ | %؛ : [arabský středník]
+ | %":uvozovky | 
+%':apostrof | 
+%(:[levá závorka] | 
+%):[pravá závorka] | 
+%-:minus | 
+%[:[levá hranatá] | 
+%]:[pravá hranatá] | 
+%{:[levá složená] | 
+%}:[pravá složená]
+%〈 : [levá lomená závorka] |
+%〉 : [pravá lomená závorka] 
+%《 : [dvojitá levá lomená závorka] |
+%》 : [dvojitá pravá lomená závorka] |
+%「 : [levá rohová závorka] |
+%」 : [pravá rohová závorka] |
+%『 : [dvojitá levá rohová závorka] |
+%』 : [dvojitá pravá rohová závorka] |
+%【 : [levá plná lentikulární závorka] |
+%】 : [pravá plná lentikulární závorka] |
+%〔 : [levá asijská komentářová závorka] |
+%〕 : [pravá asijská komentářová závorka] |
+%〖 : [levá dutá lentikulární závorka] |
+%〗 : [pravá dutá lentikulární závorka] |
+ ; 
+
+define Symbol 
+%\:zpětné lomítko | 
+%_:podtržítko | 
+%`:přízvuk | 
+%|:[svislá čára] | 
+%* : [hvězdička] |
+%… : [troitečka] |
+%。 : [ideografická tečka] |
+%‧ : [spojovací tečka] |
+%“ : [levé uvozovky] |
+%” : [pravé uvozovky] |
+%„ : [uvozovky dole] |
+%‘ : [jednoduchá uvozovka nahoře] |
+%’ : [obrácená jednoduchá uvozovka nahoře] |
+%‚ : [jednoduchá uvozovka dole] |
+%« : [boční uvozovky mířící doleva] |
+%» : [boční uvozovky mířící doprava] |
+%‐ : [spojovník] |
+%– : [krátká pomlčka] |
+%— : [dlouhá pomlčka] |
+%­ : [měkká pomlčka] |
+%¯ : [přílišný důraz] |
+%¸ : [cedylla] |
+%▪ : [černý čtverec] |
+%◾ : [černý čtverec] |
+%® : [registrovaný] |
+%™ : [ochranná známka] |
+%© : [značka autorských práv] |
+%~:vlnka ; 
+
+source SpokenSymbols.foma
+

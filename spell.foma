@@ -70,78 +70,10 @@ tab:tabulátor |
 nl:[noví řádek] | 
 cr:[konec řádku] | 
 sp:mezera | 
-nbsp:[nerozbitný prostor] ; 
+nbsp:[tvrdá mezera] ; 
 
-define Punctuation 
-%,:čárka | 
-%.:tečka | 
-%?:otazník | 
-%!:vykřičník | 
-%::dvojtečka | 
-%;:středník | 
-%":uvozovky | 
-%':apostrof | 
-%(:[levá závorka] | 
-%):[pravá závorka] | 
-%-:minus | 
-%[:[levá hranatá] | 
-%]:[pravá hranatá] | 
-%{:[levá složená] | 
-%}:[pravá složená] ; 
-
-define Symbol 
-%$:dolár | 
-%%:procent | 
-%° : stupeň | 
-%#:mřížka | 
-%&:amprsand | 
-%*:hvjezďička | 
-%+:plus | 
-%/:lomítko | 
-%<:menší | 
-%=:rovna se | 
-%>:větší | 
-%@:zavináč | 
-%\:zpětné lomítko | 
-%^:stříško | 
-%_:podtržítko | 
-%µ:mikro | 
-%`:přízvuk | 
-%|:[svislítko] | 
-%• : [bulit] |
-%… : [troitečka] |
-%“ : [levé uvozovky] |
-%” : [pravé uvozovky] |
-%‘ : [levé apostrof] |
-%’ : [pravé apostrof] |
-%– : [pomlčka	] |
-%— : [pomlčka] |
-%­ : [měkká pomlčka] |
-%⁃ : [podélná střela] |
-%● : [kolo] |
-%○ : [bílý kruh] |
-%¨ : [direza] |
-%¯ : [přílišný důraz] |
-%´ : [čárka] |
-%¸ : [cedylla] |
-%¶ : [paragraf] |
-%■ : [černý čtverec] |
-%▪ : [černý čtverec] |
-%◾ : [černý čtverec] |
-%□ : [bílý čtverec] |
-%◦ : [bílá tečka] |
-%⇒ : [Dvojitá šipka vpravo] |
-%§ : [paragraf] |
-%® : [registrovaný] |
-%™ : [ochranná známka] |
-%© : [značka autorských práv] |
-%± : [plus minus] |
-%× : [krát] |
-%÷ : [dělení] |
-%€ : [euro] |
-%~:vlnka ; 
-
+source symbols.foma
 source unicode_spell.foma
 
 regex 
-Letter | Digit | Whitespace | Punctuation | Symbol | UnicodeSpell ; 
+Letter | Digit | Whitespace | Punctuation | Symbol | SpokenSymbol | UnicodeSpell ; 
